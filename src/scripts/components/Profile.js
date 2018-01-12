@@ -8,17 +8,22 @@ import LogoutButton from 'containers/LogoutButtonContainer'
 type Props = {
   user: {
     name: string,
-    email: string
+    email: string,
+    wallet: Object
   }
 }
 
 class Profile extends Component<Props, void> {
   render () {
-    const {name, email} = this.props.user
+    const {name, email, wallet} = this.props.user
+    const address = wallet ? wallet[0].address : 'an address'
+    const mnemonic = wallet ? wallet.getMnemonic() : 'an mnemonic'
     return (
       <Wrapper>
         <Title id='profile-name'>{name}</Title>
         <Label id='profile-email'>{email}</Label>
+        <Label id='profile-address'>{address}</Label>
+        <Label id='profile-mnemonic'>{mnemonic}</Label>
         <LogoutButton />
       </Wrapper>
     )

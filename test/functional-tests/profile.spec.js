@@ -43,7 +43,7 @@ import {
 import { assert } from 'chai'
 
 describe('Profile and accounts workflow:', function () {
-  it('register a new user', function () {
+  it('register a new user @watch', function () {
     browser.url(getPath('signup'))
 
     // clear Cookies

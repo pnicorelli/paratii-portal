@@ -95,7 +95,7 @@ describe('Player: ', function () {
     // no need to test all controlers - they are tested in paratii-mediaplayer
   })
 
-  it('play a free video  @watch', function () {
+  it('play a free video', function () {
     // browser.execute(function () { console.log(paratii) })
     browser.url(`http://localhost:8080/play/${videoId}`)
     browser.waitAndClick('#player')

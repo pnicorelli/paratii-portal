@@ -1,6 +1,7 @@
 /* @flow */
 
 import { createAction } from 'redux-actions'
+import { paratii } from 'utils/ParatiiLib'
 import Promise from 'bluebird'
 import Cookies from 'js-cookie'
 
@@ -18,12 +19,13 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-export const signup = (name: string, email: string, password: string) => (dispatch: Dispatch<*>) => {
+export const signup = (name: string, email: string, password: string) => async (dispatch: Dispatch<*>) => {
   dispatch(signupRequested())
-  sleep(200).then(() => {
+  paratii.eth.wallet.clear()
+  paratii.eth.wallet.create().then((wallet) => {
     Cookies.set('email', email)
     Cookies.set('name', name)
-    dispatch(signupSuccess({name, email}))
+    dispatch(signupSuccess({name, email, wallet}))
   })
 }
 

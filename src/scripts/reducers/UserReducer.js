@@ -18,12 +18,13 @@ const reducer = {
   },
   [SIGNUP_SUCCESS]: (
     state: UserRecord,
-    { payload }: Action<{name: string, email: string}>
+    { payload }: Action<{name: string, email: string, wallet: Object}>
   ): UserRecord => {
     return state.merge({
       isSigningUp: false,
       name: payload.name,
-      email: payload.email
+      email: payload.email,
+      wallet: payload.wallet
     })
   },
   [LOGIN_REQUESTED]: (
@@ -46,14 +47,7 @@ const reducer = {
   },
   [LOGOUT]: (
     state: UserRecord
-  ): UserRecord => {
-    return state.merge({
-      isLoggingIn: false,
-      email: null,
-      name: null,
-      keepUrl: false
-    })
-  }
+  ): UserRecord => new UserRecord()
 }
 
 export default handleActions(reducer, UserRecord.fromCookies())

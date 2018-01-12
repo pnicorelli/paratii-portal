@@ -8,13 +8,15 @@ class User extends ImmutableRecord({
   name: 'John Doe', // TODO
   isSigningUp: false,
   isLoggingIn: false,
-  keepUrl: true
+  keepUrl: true,
+  wallet: null
 }) {
   email: string;
   name: string;
   isSigningUp: boolean;
   isLoggingIn: boolean;
   keepUrl: boolean;
+  wallet: Object;
 
   constructor (email?: string) {
     super({email: email})
