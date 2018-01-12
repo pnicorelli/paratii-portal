@@ -46,12 +46,24 @@ describe('Profile and accounts workflow:', function () {
   it('register a new user', function () {
     browser.url(getPath('signup'))
 
+    // clear Cookies
+    clearCookies()
+
     // fill in the form
     browser.waitForEnabled('#signup-name')
     browser.setValue('#signup-name', 'Guildenstern')
     browser.setValue('#signup-email', 'guildenstern@rosencrantz.com')
     browser.setValue('#signup-password', 'password')
     browser.click('#signup-submit')
+
+    // verify if is profile page and informations are right
+    browser.waitForExist('#profile-email', 'page did not load')
+    const profileUrl = RegExp(getPath('profile'))
+    assert.match(browser.getUrl(), profileUrl, 'it is the profile page')
+    assert.equal(browser.getText('#profile-email'), 'guildenstern@rosencrantz.com', 'not same email')
+    assert.equal(browser.getText('#profile-name'), 'Guildenstern', 'not same name')
+
+
 
     // the new user is automaticaly logged in after account creation
     // waitForUserIsLoggedIn(browser)

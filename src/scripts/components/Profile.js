@@ -17,7 +17,7 @@ class Profile extends Component<Props, void> {
     const {name, email} = this.props.user
     return (
       <Wrapper>
-        <Title>{name}</Title>
+        <Title id='profile-name'>{name}</Title>
         <Label id='profile-email'>{email}</Label>
         <LogoutButton />
       </Wrapper>
