@@ -6,11 +6,13 @@ import Cookies from 'js-cookie'
 class User extends ImmutableRecord({
   email: null,
   name: 'John Doe', // TODO
+  isSigningUp: false,
   isLoggingIn: false,
   keepUrl: true
 }) {
   email: string;
   name: string;
+  isSigningUp: boolean;
   isLoggingIn: boolean;
   keepUrl: boolean;
 

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import RequiresLogin from './RequiresLogin'
 
 import Signup from 'components/Signup'
 
@@ -6,4 +7,4 @@ const mapStateToProps = () => ({})
 
 const mapDispatchToProps = () => ({})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup)
+export default RequiresLogin(connect(mapStateToProps, mapDispatchToProps)(Signup), false)
