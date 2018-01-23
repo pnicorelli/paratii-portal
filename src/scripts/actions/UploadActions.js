@@ -17,23 +17,29 @@ const updateUploadInfo = createAction(UPDATE_UPLOAD_INFO)
 export const upload = (file: Object) => (dispatch: Dispatch<*>) => {
   // the next call dispatches an asynchronous request to upload the file to ipfs
   // (the API will change and become paratii.ipfs.add(..))
-  paratii.ipfs.uploader.upload([file], {
-    onStart: () => {
-      console.log('Uploading file', file)
-      dispatch(uploadRequested())
-    },
-    onProgress: (chunkLength, progress) => {
-      dispatch(uploadProgress(progress))
-    },
-    onError: (err) => {
+
+  let uploader = paratii.ipfs.uploader.add(file)
+  uploader.on('start', () => {
+    console.log('Uploading file', file)
+    dispatch(uploadRequested())
+  })
+
+  uploader.on('progress', (chunkLength, percent) => {
+    dispatch(uploadProgress(percent))
+  })
+
+  uploader.on('error', (err) => {
+    if (err) {
       console.log('[UPLOAD error]', err)
-    },
-    onDone: (file) => {
-      console.log('[UPLOAD done]', file)
-    },
-    onFileReady: (file) => {
-      dispatch(uploadSuccess(file.hash))
     }
+  })
+
+  uploader.on('fileReady', (file) => {
+    dispatch(uploadSuccess(file.hash))
+  })
+
+  uploader.on('done', (files) => {
+    console.log('[UPLOAD done]', files)
   })
 }
 
