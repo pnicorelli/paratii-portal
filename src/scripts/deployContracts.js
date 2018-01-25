@@ -36,5 +36,9 @@ function deployContracts () {
     .then(
       (diagnosis) => console.log(diagnosis)
     )
+    .catch(
+      console.log('Failed to deploy contracts. Did you forget to run "parity"?')
+    )
 }
+
 deployContracts()
