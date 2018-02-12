@@ -6658,11 +6658,12 @@ history@^4.7.2:
     value-equal "^0.4.0"
     warning "^3.0.0"
 
-"hlsjs-ipfs-loader@github:ya7ya/hlsjs-ipfs-loader#paratii/v0.27.1":
+"hlsjs-ipfs-loader@github:ya7ya/hlsjs-ipfs-loader#bd890b9e78f2c273fcb1dc4e1d43ad0afc69558c":
   version "0.1.1"
-  resolved "https://codeload.github.com/ya7ya/hlsjs-ipfs-loader/tar.gz/91008eaf4cf696687c48e674d883e248c049beee"
+  resolved "https://codeload.github.com/ya7ya/hlsjs-ipfs-loader/tar.gz/bd890b9e78f2c273fcb1dc4e1d43ad0afc69558c"
   dependencies:
     aegir "^11.0.2"
+    debug "^3.1.0"
     gulp "^3.9.1"
     lodash "^4.17.4"
 
@@ -11024,11 +11025,11 @@ parallel-transform@^1.1.0:
     stream-to-pull-stream "^1.7.2"
     web3 "^1.0.0-beta.29"
 
-paratii-mediaplayer@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/paratii-mediaplayer/-/paratii-mediaplayer-1.0.4.tgz#f365be7cf6a3025f699016e9cc25e1af35b74427"
+paratii-mediaplayer@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/paratii-mediaplayer/-/paratii-mediaplayer-1.1.1.tgz#49627545bcf3415acd09f6e41dbcd4d6da3906b6"
   dependencies:
-    hlsjs-ipfs-loader "github:ya7ya/hlsjs-ipfs-loader#paratii/v0.27.1"
+    hlsjs-ipfs-loader "github:ya7ya/hlsjs-ipfs-loader#bd890b9e78f2c273fcb1dc4e1d43ad0afc69558c"
     ipfs "github:ya7ya/js-ipfs#paratii/v0.27.6"
     ipfs-bitswap "^0.17.4"
     resolve-url-loader "^2.2.1"

@@ -17,7 +17,6 @@ import MainTemplate from './templates/MainTemplate'
 import MainHeader from './structures/header/MainHeader'
 import Main from './structures/Main'
 import MainFooter from './structures/footer/MainFooter'
-import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 
 import { paratiiTheme } from 'constants/ApplicationConstants'
@@ -52,7 +51,7 @@ class App extends Component<Props, void> {
           <MainHeader />
           <Main>
             <Switch>
-              <Route exact path="/" component={Home} />
+              <Route exact path="/" component={VideoManager} />
               <Route path={`${match.url}signup`} component={SignupContainer} />
               <Route path={`${match.url}login`} component={LoginContainer} />
               <Route
