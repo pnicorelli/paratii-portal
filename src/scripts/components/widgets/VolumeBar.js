@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Transition from 'react-transition-group/Transition'
 
 import IconButton from 'components/foundations/buttons/IconButton'
+import DragIndicator from 'components/widgets/DragIndicator'
 import { TRANSITION_STATE } from 'constants/ApplicationConstants'
 
 import {
@@ -44,32 +45,6 @@ const ButtonWrapper = styled.div`
   height: 17px;
   cursor: pointer;
   margin-right: ${CONTROLS_SPACING};
-`
-
-const VolumeIndicator = styled.div.attrs({
-  style: ({ currentVolume, draggingVolumePercentage, transitionState }) => ({
-    transform: `scale(${
-      transitionState === TRANSITION_STATE.ENTERED ? 1.0 : 0.0
-    })`,
-    left: draggingVolumePercentage
-      ? `calc(${Math.max(
-        0,
-        Math.min(100, draggingVolumePercentage)
-      )}% - ${VOLUME_INDICATOR_DIMENSION / 2}px)`
-      : `calc(${Math.max(
-        0,
-        Math.min(100, currentVolume)
-      )}% - ${VOLUME_INDICATOR_DIMENSION / 2}px)`
-  })
-})`
-  position: absolute;
-  cursor: pointer;
-  width: ${VOLUME_INDICATOR_DIMENSION}px;
-  height: ${VOLUME_INDICATOR_DIMENSION}px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.colors.bar.scrubber};
-  transition: transform ${TRANSITION_DURATION}
-    ${({ theme }) => theme.animation.ease.smooth};
 `
 
 const VolumeBarBuffer = styled.div`
@@ -242,9 +217,10 @@ class PlayerControls extends Component<Props, State> {
                 }}
               >
                 <VolumeRemaining currentVolume={currentVolume} />
-                <VolumeIndicator
-                  currentVolume={currentVolume}
-                  draggingVolumePercentage={draggingVolumePercentage}
+                <DragIndicator
+                  currentValuePercentage={currentVolume}
+                  dimension={VOLUME_INDICATOR_DIMENSION}
+                  draggingPercentage={draggingVolumePercentage}
                   onMouseDown={() => {
                     this.setState({
                       userIsDragging: true

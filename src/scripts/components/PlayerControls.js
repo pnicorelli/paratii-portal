@@ -7,6 +7,7 @@ import { List as ImmutableList } from 'immutable'
 import { PlaybackLevel } from 'records/PlayerRecords'
 import VideoRecord from 'records/VideoRecords'
 import VolumeBar from 'components/widgets/VolumeBar'
+import DragIndicator from 'components/widgets/DragIndicator'
 import PlaybackLevels from 'components/widgets/PlaybackLevels'
 import IconButton from 'components/foundations/buttons/IconButton'
 import Colors from 'components/foundations/base/Colors'
@@ -87,27 +88,6 @@ const Controls = styled.div`
 
 const PROGRESS_INDICATOR_DIMENSION: number = 20
 
-const ProgressIndicator = styled.div.attrs({
-  style: ({ currentTime, totalDuration, scrubbingPositionPercentage }) => ({
-    left: scrubbingPositionPercentage
-      ? `calc(${Math.max(
-        0,
-        Math.min(scrubbingPositionPercentage, 100)
-      )}% - ${PROGRESS_INDICATOR_DIMENSION / 2}px)`
-      : `calc(${
-        !totalDuration
-          ? 0
-          : Math.max(0, Math.min(100, currentTime * 100 / totalDuration))
-      }% - ${PROGRESS_INDICATOR_DIMENSION / 2}px)`
-  })
-})`
-  position: absolute;
-  width: ${PROGRESS_INDICATOR_DIMENSION}px;
-  height: ${PROGRESS_INDICATOR_DIMENSION}px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.colors.bar.scrubber};
-  `
-
 const ProgressBuffer = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
@@ -129,6 +109,7 @@ const ProgressBar = styled.div`
   width: 100%;
   height: 5px;
   display: flex;
+  position: relative;
   justify-content: flex-end;  
   align-items: center;
   background: linear-gradient(to right, ${({ theme }) => `${theme.colors.bar.from}, ${theme.colors.bar.to}`});
@@ -321,15 +302,17 @@ class PlayerControls extends Component<Props, State> {
                 bufferTime={currentBufferedTimeSeconds}
                 totalDuration={currentBufferedTimeSeconds}
               />
-              <ProgressIndicator
-                currentTime={currentTimeSeconds}
+              <DragIndicator
+                currentValuePercentage={
+                  currentTimeSeconds / videoDurationSeconds * 100
+                }
+                dimension={PROGRESS_INDICATOR_DIMENSION}
+                draggingPercentage={scrubbingPositionPercentage}
                 onMouseDown={() => {
                   this.setState({
                     userIsScrubbing: true
                   })
                 }}
-                scrubbingPositionPercentage={scrubbingPositionPercentage}
-                totalDuration={videoDurationSeconds}
               />
             </ProgressBar>
           </ProgressBarWrapper>
