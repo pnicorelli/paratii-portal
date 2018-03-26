@@ -111,10 +111,31 @@ class VideoListItem extends Component<Props, void> {
     this.props.setSelectedVideo(this.props.video.id)
   }
 
+  handleMessage (video) {
+    if (
+      video.uploadStatus.name === 'success' &&
+      video.transcodingStatus.name === 'success'
+    ) {
+      if (video.title.length < 1) {
+        return 'Please provide a title and description'
+      } else {
+        return 'Your video is ready'
+      }
+    } else {
+      if (video.uploadStatus.name === 'failed') {
+        return 'Your video could not be uploaded'
+      } else if (video.transcodingStatus.name === 'failed') {
+        return 'Your video could not be transcoded'
+      } else if (video.transcodingStatus.name === 'running') {
+        return 'Transcoding your video'
+      } else {
+        return 'Uploading your video'
+      }
+    }
+  }
+
   render () {
     const { video, selected } = this.props
-
-    let isReady = false
 
     const title = video.title || video.filename
     const ipfsHash = (video && video.get('ipfsHash')) || ''
@@ -132,29 +153,16 @@ class VideoListItem extends Component<Props, void> {
       return <ListItem>Something went wrong - no video known</ListItem>
     }
 
-    let statusMessage = ''
+    const statusMessage = this.handleMessage(video)
+    const isReady = statusMessage === 'Your video is ready'
 
-    if (
-      video.storageStatus.name === 'success' &&
+    console.log(
+      statusMessage,
+      video.uploadStatus.name,
+      video.transcodingStatus.name,
+      video.storageStatus.name === 'success',
       video.transcodingStatus.name === 'success'
-    ) {
-      if (video.title.length < 1) {
-        statusMessage = 'Please provide a title and description'
-      } else {
-        statusMessage = 'Your video is ready'
-        isReady = true
-      }
-    } else {
-      if (video.uploadStatus.name === 'failed') {
-        statusMessage = 'Your video could not be uploaded'
-      } else if (video.transcodingStatus.name === 'failed') {
-        statusMessage = 'Your video could not be transcoded'
-      } else if (video.uploadStatus.name === 'success') {
-        statusMessage = 'Transcoding your video'
-      } else {
-        statusMessage = 'Uploading your video'
-      }
-    }
+    )
 
     const uploadProgress = video.uploadStatus.data.progress
     const transcodingStatus = video.transcodingStatus.data.progress
