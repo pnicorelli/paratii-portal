@@ -111,7 +111,7 @@ class VideoListItem extends Component<Props, void> {
     this.props.setSelectedVideo(this.props.video.id)
   }
 
-  handleMessage (video) {
+  handleVideoMessage (video) {
     if (
       video.uploadStatus.name === 'success' &&
       video.transcodingStatus.name === 'success'
@@ -153,7 +153,7 @@ class VideoListItem extends Component<Props, void> {
       return <ListItem>Something went wrong - no video known</ListItem>
     }
 
-    const statusMessage = this.handleMessage(video)
+    const statusMessage = this.handleVideoMessage(video)
     const isReady = statusMessage === 'Your video is ready'
 
     console.log(
