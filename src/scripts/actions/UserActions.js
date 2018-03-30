@@ -3,6 +3,7 @@
 import { createAction } from 'redux-actions'
 import Promise from 'bluebird'
 import Cookies from 'js-cookie'
+import bip39 from 'bip39'
 
 import {
   LOGIN_REQUESTED,
@@ -103,8 +104,9 @@ export const setupKeystore = () => async (
     }
   }
   if (!wallet || !walletIsValid) {
-    paratii.eth.wallet.create()
-    mnemonic = await paratii.eth.wallet.getMnemonic()
+    mnemonic = bip39.generateMnemonic()
+    paratii.eth.wallet.create(1, mnemonic)
+    // mnemonic = await paratii.eth.wallet.getMnemonic()
     wallet = paratii.eth.wallet.encrypt(DEFAULT_PASSWORD)
     dispatch(
       setAndSyncWalletData({
