@@ -119,4 +119,4 @@ workflows:
             - yarn_dependencies
       - deploy:
           requires:
-            - chimptest
+            - testall
