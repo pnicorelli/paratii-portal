@@ -66,48 +66,26 @@ jobs:
       - *restore_node_modules
       - run: yarn run unit-test-circleci
 
-  parity:
+  buildAndTest:
     <<: *container_config
     steps:
       - *restore_repo
       - *restore_node_modules
+      - run:
+        command: mv /paratii-db/paratii-db db
       - run:
           command: yarn run parity
           background: true
-
-  builddev:
-    <<: *container_config
-    steps:
-      - *restore_repo
-      - *restore_node_modules
       - run:
           command: yarn run build:dev
           background: true
-
-  runserver:
-    <<: *container_config
-    steps:
-      - *restore_repo
-      - *restore_node_modules
       - run:
           command: yarn run server:dev
           background: true
-  rundb:
-    <<: *container_config
-    steps:
-      - *restore_repo
-      - *restore_node_modules
-      - run:
-          command: mv /paratii-db/paratii-db db
       - run:
           command: cd db && npm run dev
           background: true
-
-  chimptest:
-    <<: *container_config
-    steps:
-      - *restore_repo
-      - *restore_node_modules
+      - run: node src/scripts/waitForServer.js
       - run: yarn run chimp-circleci-test
 
   deploy:
@@ -138,26 +116,11 @@ workflows:
       - unittest:
           requires:
             - yarn_dependencies
-      - parity:
+      - buildAndTest:
           requires:
             - yarn_dependencies
-      - builddev:
-          requires:
-            - yarn_dependencies
-      - runserver:
-          requires:
-            - yarn_dependencies
-      - rundb:
-          requires:
-            - yarn_dependencies
-      - chimptest:
+      - deploy:
           requires:
             - quality
             - unittest
-            - parity
-            - builddev
-            - runserver
-            - rundb
-      - deploy:
-          requires:
-            - chimptest
+            - buildAndTest
