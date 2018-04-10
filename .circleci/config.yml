@@ -54,7 +54,7 @@ jobs:
           name: download dependencies
           command: |
             if [ ! -d node_modules ]; then
-              yarn --pure-lockfile
+              yarn --pure-lockfile --ignore-engines
             fi
       - save_cache:
           key: *yarn_cache_key
