@@ -11,14 +11,14 @@ references:
   restore_repo: &restore_repo
     restore_cache:
       keys:
-        - v2-repo-{{ .Branch }}-{{ .Revision }}
-        - v2-repo-{{ .Branch }}
-        - v2-repo
+        - v3-repo-{{ .Branch }}-{{ .Revision }}
+        - v3-repo-{{ .Branch }}
+        - v3-repo
 
   yarn_cache_key: &yarn_cache_key
-    v2-dependency-yarn-{{ checksum "yarn.lock" }}
+    v3-dependency-yarn-{{ checksum "yarn.lock" }}
   yarn_backup_cache_key: &yarn_backup_cache_key
-    v2-dependency-yarn
+    v3-dependency-yarn
 
   restore_node_modules: &restore_node_modules
     restore_cache:
@@ -33,7 +33,7 @@ jobs:
       - *restore_repo
       - checkout
       - save_cache:
-          key: v2-repo-{{ .Branch }}-{{ .Revision }}
+          key: v3-repo-{{ .Branch }}-{{ .Revision }}
           paths:
             - .
   yarn_dependencies:
