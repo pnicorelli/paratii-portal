@@ -110,7 +110,6 @@ jobs:
     steps:
       - *restore_repo
       - *restore_node_modules
-      - run: node src/scripts/waitForServer.js
       - run: yarn run chimp-circleci-test
 
   deploy:
