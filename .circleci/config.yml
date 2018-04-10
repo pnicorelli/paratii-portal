@@ -8,13 +8,6 @@ references:
       - image: circleci/mongo:latest
     working_directory: ~/repo
 
-  workspace_root: &workspace_root
-    /tmp/workspace
-
-  attach_workspace: &attach_workspace
-    attach_workspace:
-      at: *workspace_root
-
   restore_repo: &restore_repo
     restore_cache:
       keys:
