@@ -72,7 +72,7 @@ jobs:
       - *restore_repo
       - *restore_node_modules
       - run:
-        command: mv /paratii-db/paratii-db db
+          command: mv /paratii-db/paratii-db db
       - run:
           command: yarn run parity
           background: true
