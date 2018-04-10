@@ -1,38 +1,130 @@
 version: 2
-jobs:
-  build:
+
+references:
+
+  container_config: &container_config
     docker:
       - image: leeaandrob/paratii-portal:0.0.6
       - image: circleci/mongo:latest
     working_directory: ~/repo
+
+  workspace_root: &workspace_root
+    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+  restore_repo: &restore_repo
+    restore_cache:
+      keys:
+        - v2-repo-{{ .Branch }}-{{ .Revision }}
+        - v2-repo-{{ .Branch }}
+        - v2-repo
+
+  yarn_cache_key: &yarn_cache_key
+    v2-dependency-yarn-{{ checksum "yarn.lock" }}
+  yarn_backup_cache_key: &yarn_backup_cache_key
+    v2-dependency-yarn
+
+  restore_node_modules: &restore_node_modules
+    restore_cache:
+      keys:
+        - *yarn_cache_key
+        - *yarn_backup_cache_key
+
+jobs:
+  checkout_code:
+    <<: *container_config
     steps:
+      - *restore_repo
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "yarn.lock" }}
-      - run: yarn --pure-lockfile
       - save_cache:
+          key: v2-repo-{{ .Branch }}-{{ .Revision }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
+            - .
+  yarn_dependencies:
+    <<: *container_config
+    docker:
+      - image: node:4.8.3
+    steps:
+      - *restore_repo
+      - *restore_node_modules
+      - run:
+          name: download dependencies
+          command: |
+            if [ ! -d node_modules ]; then
+              yarn --pure-lockfile
+            fi
+      - save_cache:
+          key: *yarn_cache_key
+          paths:
+            - ~/repo/node_modules
+
+  quality:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run: yarn run quality
+
+  unittest:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run: yarn run unit-test-circleci
+
+  parity:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run:
           command: yarn run parity
           background: true
+
+  builddev:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run:
           command: yarn run build:dev
           background: true
+
+  runserver:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run:
           command: yarn run server:dev
           background: true
+  rundb:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run:
           command: mv /paratii-db/paratii-db db
       - run:
           command: cd db && npm run dev
           background: true
+
+  chimptest:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - run: node src/scripts/waitForServer.js
       - run: yarn run chimp-circleci-test
+
+  deploy:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_node_modules
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
@@ -41,3 +133,41 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "dev" ]; then
               ./deploy.sh staging
             fi
+
+workflows:
+  version: 2
+  build_accept_deploy:
+    jobs:
+      - checkout_code
+      - yarn_dependencies:
+          requires:
+            - checkout_code
+      - quality:
+          requires:
+            - yarn_dependencies
+      - unittest:
+          requires:
+            - yarn_dependencies
+      - parity:
+          requires:
+            - yarn_dependencies
+      - builddev:
+          requires:
+            - yarn_dependencies
+      - runserver:
+          requires:
+            - yarn_dependencies
+      - rundb:
+          requires:
+            - yarn_dependencies
+      - chimptest:
+          requires:
+            - quality
+            - unittest
+            - parity
+            - builddev
+            - runserver
+            - rundb
+      - deploy:
+          requires:
+            - chimptest
